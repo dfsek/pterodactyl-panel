@@ -111,7 +111,6 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                     { oauthEnabled &&
                         <div css={tw`border-t-2 border-neutral-50 my-4`}/>
                     }
-                </React.Fragment>
                 }
 
                 { oauthEnabled &&
