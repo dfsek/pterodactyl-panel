@@ -53,4 +53,4 @@ Route::post('/logout', [Auth\LoginController::class, 'logout'])
 Route::fallback([Auth\LoginController::class, 'index']);
 
 // OAuth callback route accessible when logged in and when logged out
-Route::get('/oauth/callback', 'OAuthController@callback')->name('oauth.callback');
+Route::get('/oauth/callback', [Auth\OAuthController::class, 'callback'])->name('oauth.callback');
