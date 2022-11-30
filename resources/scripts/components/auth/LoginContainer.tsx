@@ -111,14 +111,13 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                     { oauthEnabled &&
                         <div css={tw`border-t-2 border-neutral-50 my-4`}/>
                     }
-                }
 
-                { oauthEnabled &&
-                <div css={oauthRequired ? tw`text-sm text-neutral-500 text-center mt-20` : tw`text-sm text-neutral-500 text-center`}>
-                    {JSON.parse(drivers).map((driver: string) => (
-                        <a key={driver} href={'/auth/oauth?driver=' + driver}>
-                            <img src={'/assets/svgs/' + driver + '.svg'} css={tw`inline-block w-12 mx-2 mb-2`} alt={driver}/>
-                        </a>
+                    { oauthEnabled &&
+                    <div css={oauthRequired ? tw`text-sm text-neutral-500 text-center mt-20` : tw`text-sm text-neutral-500 text-center`}>
+                        {JSON.parse(drivers).map((driver: string) => (
+                            <a key={driver} href={'/auth/oauth?driver=' + driver}>
+                                <img src={'/assets/svgs/' + driver + '.svg'} css={tw`inline-block w-12 mx-2 mb-2`} alt={driver}/>
+                            </a>
                     ))}
                 </div>
                 }
