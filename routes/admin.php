@@ -76,7 +76,7 @@ Route::group(['prefix' => 'settings'], function () {
     Route::patch('/', [Admin\Settings\IndexController::class, 'update']);
     Route::patch('/mail', [Admin\Settings\MailController::class, 'update']);
     Route::patch('/advanced', [Admin\Settings\AdvancedController::class, 'update']);
-    Route::patch('/oauth', [Admin\Settings\OAuthController::class, 'update');
+    Route::patch('/oauth', [Admin\Settings\OAuthController::class, 'update']);
 });
 
 /*
