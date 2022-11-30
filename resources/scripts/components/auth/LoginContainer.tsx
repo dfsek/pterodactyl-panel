@@ -18,10 +18,10 @@ interface Values {
 
 const LoginContainer = ({ history }: RouteComponentProps) => {
     const ref = useRef<Reaptcha>(null);
-    const [ token, setToken ] = useState('');
+    const [token, setToken] = useState('');
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { enabled: recaptchaEnabled, siteKey } = useStoreState(state => state.settings.data!.recaptcha);
+    const { enabled: recaptchaEnabled, siteKey } = useStoreState((state) => state.settings.data!.recaptcha);
     const { enabled: oauthEnabled, required: oauthRequired, drivers } = useStoreState(state => state.settings.data!.oauth);
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
         if (recaptchaEnabled && !token) {
-            ref.current!.execute().catch((error: any) => {
+            ref.current!.execute().catch((error) => {
                 console.error(error);
 
                 setSubmitting(false);
@@ -45,16 +45,16 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
         }
 
         login({ ...values, recaptchaData: token })
-            .then(response => {
+            .then((response) => {
                 if (response.complete) {
-                    // @ts-ignore
+                    // @ts-expect-error this is valid
                     window.location = response.intended || '/';
                     return;
                 }
 
                 history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
 
                 setToken('');
@@ -76,36 +76,21 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer title={'Login to Continue'} css={tw`w-full flex`}>
-
-                    {(!oauthEnabled || !oauthRequired) &&
-                    <React.Fragment>
-                        <Field
-                            light
-                            type={'text'}
-                            label={'Username or Email'}
-                            name={'username'}
-                            disabled={isSubmitting}
-                        />
-                        <div css={tw`mt-6`}>
-                            <Field
-                                light
-                                type={'password'}
-                                label={'Password'}
-                                name={'password'}
-                                disabled={isSubmitting}
-                            />
-                        </div>
-                        <div css={tw`mt-6`}>
-                            <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
-                                Login
-                            </Button>
-                        </div>
-                        {recaptchaEnabled &&
+                    <Field light type={'text'} label={'Username or Email'} name={'username'} disabled={isSubmitting} />
+                    <div css={tw`mt-6`}>
+                        <Field light type={'password'} label={'Password'} name={'password'} disabled={isSubmitting} />
+                    </div>
+                    <div css={tw`mt-6`}>
+                        <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
+                            Login
+                        </Button>
+                    </div>
+                    {recaptchaEnabled && (
                         <Reaptcha
                             ref={ref}
                             size={'invisible'}
                             sitekey={siteKey || '_invalid_key'}
-                            onVerify={(response: any) => {
+                            onVerify={(response) => {
                                 setToken(response);
                                 submitForm();
                             }}
@@ -114,31 +99,30 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                                 setToken('');
                             }}
                         />
-                        }
-                        <div css={tw`mt-6 text-center`}>
-                            <Link
-                                to={'/auth/password'}
-                                css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
-                            >
-                                Forgot password?
-                            </Link>
-                        </div>
-
-                        { oauthEnabled &&
-                        <div css={tw`border-t-2 border-neutral-50 my-4`}/>
-                        }
-                    </React.Fragment>
-                    }
-
-                    { oauthEnabled &&
-                    <div css={oauthRequired ? tw`text-sm text-neutral-500 text-center mt-20` : tw`text-sm text-neutral-500 text-center`}>
-                        {JSON.parse(drivers).map((driver: string) => (
-                            <a key={driver} href={'/auth/oauth?driver=' + driver}>
-                                <img src={'/assets/svgs/' + driver + '.svg'} css={tw`inline-block w-12 mx-2 mb-2`} alt={driver}/>
-                            </a>
-                        ))}
+                    )}
+                    <div css={tw`mt-6 text-center`}>
+                        <Link
+                            to={'/auth/password'}
+                            css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
+                        >
+                            Forgot password?
+                        </Link>
                     </div>
+                    { oauthEnabled &&
+                        <div css={tw`border-t-2 border-neutral-50 my-4`}/>
                     }
+                </React.Fragment>
+                }
+
+                { oauthEnabled &&
+                <div css={oauthRequired ? tw`text-sm text-neutral-500 text-center mt-20` : tw`text-sm text-neutral-500 text-center`}>
+                    {JSON.parse(drivers).map((driver: string) => (
+                        <a key={driver} href={'/auth/oauth?driver=' + driver}>
+                            <img src={'/assets/svgs/' + driver + '.svg'} css={tw`inline-block w-12 mx-2 mb-2`} alt={driver}/>
+                        </a>
+                    ))}
+                </div>
+                }
                 </LoginFormContainer>
             )}
         </Formik>

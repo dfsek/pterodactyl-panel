@@ -42,7 +42,6 @@ class AssetComposer
                 'enabled' => config('recaptcha.enabled', false),
                 'siteKey' => config('recaptcha.website_key') ?? '',
             ],
-            'analytics' => config('app.analytics') ?? '',
             'oauth' => [
                 'enabled' => config('oauth.enabled', false),
                 'required' => config('oauth.required', 0) == 3

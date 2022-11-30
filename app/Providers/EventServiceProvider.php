@@ -3,6 +3,15 @@
 namespace Pterodactyl\Providers;
 
 use SocialiteProviders\Manager\SocialiteWasCalled;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Observers\UserObserver;
+use Pterodactyl\Observers\ServerObserver;
+use Pterodactyl\Observers\SubuserObserver;
+use Pterodactyl\Observers\EggVariableObserver;
+use Pterodactyl\Listeners\Auth\AuthenticationListener;
 use Pterodactyl\Events\Server\Installed as ServerInstalledEvent;
 use Pterodactyl\Notifications\ServerInstalled as ServerInstalledNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -15,14 +24,21 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        ServerInstalledEvent::class => [
-            ServerInstalledNotification::class,
-        ],
+        ServerInstalledEvent::class => [ServerInstalledNotification::class],
+    ];
+
+    protected $subscribe = [
+        AuthenticationListener::class,
     ];
 
     public function boot()
     {
         parent::boot();
+
+        User::observe(UserObserver::class);
+        Server::observe(ServerObserver::class);
+        Subuser::observe(SubuserObserver::class);
+        EggVariable::observe(EggVariableObserver::class);
 
         // Add dynamic Socialite providers from settings
         if (!app('config')->get('oauth.enabled')) {
@@ -52,5 +68,10 @@ class EventServiceProvider extends ServiceProvider
         foreach (array_unique($listeners) as $listener) {
             app('events')->listen(SocialiteWasCalled::class, $listener);
         }
+    }
+
+    public function shouldDiscoverEvents()
+    {
+        return true;
     }
 }

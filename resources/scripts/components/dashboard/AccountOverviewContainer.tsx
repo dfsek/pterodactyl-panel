@@ -18,13 +18,13 @@ const Container = styled.div`
     & > div {
         ${tw`w-full`};
 
-        ${breakpoint('md')`
-            width: calc(50% - 1rem);
-        `}
+        ${breakpoint('sm')`
+      width: calc(50% - 1rem);
+    `}
 
-        ${breakpoint('xl')`
-            ${tw`w-auto flex-1`};
-        `}
+        ${breakpoint('md')`
+      ${tw`w-auto flex-1`};
+    `}
     }
 `;
 
@@ -34,25 +34,22 @@ export default () => {
 
     return (
         <PageContentBlock title={'Account Overview'}>
-            {state?.twoFactorRedirect &&
-            <MessageBox title={'2-Factor Required'} type={'error'}>
-                Your account must have two-factor authentication enabled in order to continue.
-            </MessageBox>
-            }
-            <Container css={[ tw`mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
+            {state?.twoFactorRedirect && (
+                <MessageBox title={'2-Factor Required'} type={'error'}>
+                    Your account must have two-factor authentication enabled in order to continue.
+                </MessageBox>
+            )}
+
+            <Container css={[tw`lg:grid lg:grid-cols-3 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}>
                 <ContentBox title={'Update Password'} showFlashes={'account:password'}>
-                    <UpdatePasswordForm/>
+                    <UpdatePasswordForm />
                 </ContentBox>
-                <ContentBox
-                    css={tw`mt-8 md:mt-0 md:ml-8`}
-                    title={'Update Email Address'}
-                    showFlashes={'account:email'}
-                >
-                    <UpdateEmailAddressForm/>
+                <ContentBox css={tw`mt-8 sm:mt-0 sm:ml-8`} title={'Update Email Address'} showFlashes={'account:email'}>
+                    <UpdateEmailAddressForm />
                 </ContentBox>
                 <div>
-                    <ContentBox css={tw`lg:ml-8 mt-8 lg:mt-0 lg:mb-8`} title={'Configure Two Factor'}>
-                        <ConfigureTwoFactorForm/>
+                    <ContentBox css={tw`md:ml-8 mt-8 md:mt-0 lg:mb-8`} title={'Two-Step Verification'}>
+                        <ConfigureTwoFactorForm />
                     </ContentBox>
                     {oauthEnabled &&
                     <ContentBox css={tw`lg:ml-8`} title={'Configure OAuth'}>
